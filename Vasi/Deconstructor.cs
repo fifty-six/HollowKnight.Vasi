@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Vasi
 {
     [PublicAPI]
-    public static class Deconstructer
+    public static class Deconstructor
     {
         public static void Deconstruct(this Vector3 v, out float x, out float y, out float z) => (x, y, z) = (v.x, v.y, v.z);
 
