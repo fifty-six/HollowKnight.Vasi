@@ -49,8 +49,6 @@ namespace Vasi
 
                 yield return iter.Current;
             }
-
-            yield return elem;
         }
     }
 }
