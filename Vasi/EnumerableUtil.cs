@@ -42,13 +42,18 @@ namespace Vasi
         {
             using IEnumerator<T> iter = source.GetEnumerator();
 
-            for (int i = 0; iter.MoveNext(); i++)
+            int i = 0;
+
+            for (; iter.MoveNext(); i++)
             {
                 if (i == index)
                     yield return elem;
 
                 yield return iter.Current;
             }
+
+            if (i == index)
+                yield return elem;
         }
     }
 }
