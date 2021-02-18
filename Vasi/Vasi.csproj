@@ -5,7 +5,7 @@
         <LangVersion>latest</LangVersion>
         <AssemblyTitle>Vasi</AssemblyTitle>
         <Product>Vasi</Product>
-        <Copyright>Copyright © 2020</Copyright>
+        <Copyright>Copyright Yusuf Bham © 2020</Copyright>
         <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -14,9 +14,6 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="copy &quot;$(TargetPath)&quot; &quot;D:\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\&quot;" />
-    </Target>
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
@@ -34,4 +31,20 @@
             <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
     </ItemGroup>
+    <Target Name="CopyMod" AfterTargets="PostBuildEvent">
+        <Copy
+                SourceFiles="$(TargetPath)"
+                DestinationFolder="D:/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods"
+                SkipUnchangedFiles="true"
+        />
+    </Target>
+    <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+        <MakeDir Directories="$(ProjectDir)Output"/>
+        <Delete Files="$(ProjectDir)/$(MSBuildProjectName).zip"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)/Output/"/>
+        <Copy SourceFiles="$(SolutionDir)README.md" DestinationFolder="$(ProjectDir)/Output/"/>
+        <Copy SourceFiles="$(SolutionDir)LICENSE" DestinationFolder="$(ProjectDir)/Output/"/>
+        <ZipDirectory DestinationFile="$(ProjectDir)/$(MSBuildProjectName).zip" SourceDirectory="$(ProjectDir)/Output"/>
+        <RemoveDir Directories="$(ProjectDir)Output"/>
+    </Target>
 </Project>
