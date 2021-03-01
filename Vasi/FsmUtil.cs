@@ -22,7 +22,7 @@ namespace Vasi
 
         public static void RemoveAllOfType<T>(this FsmState state) where T : FsmStateAction
         {
-            state.Actions = state.Actions.Where(x => !(x is T)).ToArray();
+            state.Actions = state.Actions.Where(x => x is not T).ToArray();
         }
 
         public static void RemoveAnim(this PlayMakerFSM fsm, string stateName, int index)
@@ -104,10 +104,10 @@ namespace Vasi
         {
             self.GetState(state).ChangeTransition(eventName, toState);
         }
-
+        
         public static void ChangeTransition(this FsmState state, string eventName, string toState)
         {
-            state.Transitions.First(tr => tr.EventName == eventName).ToState = toState;
+            state.Transitions.First(tr => tr.EventName == eventName).ToFsmState = state.Fsm.GetState(toState);
         }
         
         public static void AddTransition(this FsmState state, FsmEvent @event, string toState)
@@ -117,7 +117,7 @@ namespace Vasi
                  new FsmTransition
                  {
                      FsmEvent = @event,
-                     ToState = toState
+                     ToFsmState = state.Fsm.GetState(toState)
                  }
              )
              .ToArray();
@@ -132,7 +132,7 @@ namespace Vasi
         [PublicAPI]
         public static void RemoveTransition(this FsmState state, string transition)
         {
-            state.Transitions = state.Transitions.Where(trans => transition != trans.ToState).ToArray();
+            state.Transitions = state.Transitions.Where(trans => transition != trans.ToFsmState.Name).ToArray();
         }
 
         [PublicAPI]
