@@ -9,13 +9,11 @@ namespace Vasi
     {
         private static Delegate CreateGetStaticFieldDelegate<TField>(FieldInfo fi)
         {
-            var dm = new DynamicMethod
+            var dm = new DynamicMethodDefinition
             (
-                "FieldAccess" + fi.DeclaringType?.Name + fi.Name,
+                "__FieldAccess" + fi.DeclaringType?.Name + fi.Name,
                 typeof(TField),
-                new Type[0],
-                typeof(Mirror),
-                true
+                new Type[0]
             );
 
             ILGenerator gen = dm.GetILGenerator();
@@ -23,18 +21,16 @@ namespace Vasi
             gen.Emit(OpCodes.Ldsfld, fi);
             gen.Emit(OpCodes.Ret);
 
-            return dm.CreateDelegate(typeof(Func<TField>));
+            return dm.Generate().CreateDelegate(typeof(Func<TField>));
         }
 
         private static Delegate CreateGetFieldDelegate<TType, TField>(FieldInfo fi)
         {
-            var dm = new DynamicMethod
+            var dm = new DynamicMethodDefinition
             (
-                "FieldAccess" + fi.DeclaringType?.Name + fi.Name,
+                "__FieldAccess" + fi.DeclaringType?.Name + fi.Name,
                 typeof(TField),
-                new[] { typeof(TType) },
-                typeof(Mirror),
-                true
+                new[] { typeof(TType) }
             );
 
             ILGenerator gen = dm.GetILGenerator();
@@ -43,14 +39,14 @@ namespace Vasi
             gen.Emit(OpCodes.Ldfld, fi);
             gen.Emit(OpCodes.Ret);
 
-            return dm.CreateDelegate(typeof(Func<TType, TField>));
+            return dm.Generate().CreateDelegate(typeof(Func<TType, TField>));
         }
 
         private static Delegate CreateGetFieldRefDelegate<TClass, TField>(FieldInfo info)
         {
             var dm = new DynamicMethodDefinition
             (
-                "ReturnByRef" + info.DeclaringType?.Name + info.Name,
+                "__ReturnByRef" + info.DeclaringType?.Name + info.Name,
                 typeof(TField).MakeByRefType(),
                 new[] { typeof(TClass) }
             );
@@ -68,7 +64,7 @@ namespace Vasi
         {
             var dm = new DynamicMethodDefinition
             (
-                "ReturnByRef" + fi.DeclaringType?.Name + fi.Name,
+                "__ReturnByRef" + fi.DeclaringType?.Name + fi.Name,
                 fi.FieldType.MakeByRefType(),
                 new Type[0]
             );
@@ -83,13 +79,11 @@ namespace Vasi
 
         private static Delegate CreateSetFieldDelegate<TType, TField>(FieldInfo fi)
         {
-            var dm = new DynamicMethod
+            var dm = new DynamicMethodDefinition
             (
-                "FieldSet" + fi.DeclaringType?.Name + fi.Name,
+                "__FieldSet" + fi.DeclaringType?.Name + fi.Name,
                 typeof(void),
-                new[] { typeof(TType), typeof(TField) },
-                typeof(Mirror),
-                true
+                new[] { typeof(TType), typeof(TField) }
             );
 
             ILGenerator gen = dm.GetILGenerator();
@@ -99,18 +93,16 @@ namespace Vasi
             gen.Emit(OpCodes.Stfld, fi);
             gen.Emit(OpCodes.Ret);
 
-            return dm.CreateDelegate(typeof(Action<TType, TField>));
+            return dm.Generate().CreateDelegate(typeof(Action<TType, TField>));
         }
 
         private static Delegate CreateSetStaticFieldDelegate<TField>(FieldInfo fi)
         {
-            var dm = new DynamicMethod
+            var dm = new DynamicMethodDefinition
             (
-                "FieldSet" + fi.DeclaringType?.Name + fi.Name,
+                "__FieldSet" + fi.DeclaringType?.Name + fi.Name,
                 typeof(void),
-                new[] { typeof(TField) },
-                typeof(Mirror),
-                true
+                new[] { typeof(TField) }
             );
 
             ILGenerator gen = dm.GetILGenerator();
@@ -119,7 +111,7 @@ namespace Vasi
             gen.Emit(OpCodes.Stsfld, fi);
             gen.Emit(OpCodes.Ret);
 
-            return dm.CreateDelegate(typeof(Action<TField>));
+            return dm.Generate().CreateDelegate(typeof(Action<TField>));
         }
     }
 }
