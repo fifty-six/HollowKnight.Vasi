@@ -15,13 +15,13 @@ namespace Vasi
 
         public delegate ref TField FuncByRef<TField>();
 
-        private static readonly Dictionary<Type, Dictionary<string, FieldInfo>> Fields = new Dictionary<Type, Dictionary<string, FieldInfo>>();
+        private static readonly Dictionary<Type, Dictionary<string, FieldInfo>> Fields = new();
 
-        private static readonly Dictionary<FieldInfo, Delegate> Getters = new Dictionary<FieldInfo, Delegate>();
+        private static readonly Dictionary<FieldInfo, Delegate> Getters = new();
 
-        private static readonly Dictionary<FieldInfo, Delegate> RefGetters = new Dictionary<FieldInfo, Delegate>();
+        private static readonly Dictionary<FieldInfo, Delegate> RefGetters = new();
 
-        private static readonly Dictionary<FieldInfo, Delegate> Setters = new Dictionary<FieldInfo, Delegate>();
+        private static readonly Dictionary<FieldInfo, Delegate> Setters = new();
 
         /// <summary>
         ///     Gets a field on a type
