@@ -113,14 +113,14 @@ namespace Vasi
         public static void AddTransition(this FsmState state, FsmEvent @event, string toState)
         {
             state.Transitions = state.Transitions.Append
-            (
-                new FsmTransition
-                {
-                    FsmEvent = @event,
-                    ToFsmState = state.Fsm.GetState(toState)
-                }
-            )
-            .ToArray();
+             (
+                 new FsmTransition
+                 {
+                     FsmEvent = @event,
+                     ToFsmState = state.Fsm.GetState(toState)
+                 }
+             )
+             .ToArray();
         }
         
         [PublicAPI]
