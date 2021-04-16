@@ -29,7 +29,7 @@ namespace Vasi
         {
             var anim = fsm.GetAction<Tk2dPlayAnimationWithEvents>(stateName, index);
 
-            var @event = FsmEvent.GetFsmEvent(anim.animationCompleteEvent ?? anim.animationTriggerEvent);
+            var @event = new FsmEvent(anim.animationCompleteEvent ?? anim.animationTriggerEvent);
 
             FsmState state = fsm.GetState(stateName);
 
@@ -73,7 +73,7 @@ namespace Vasi
             };
 
 
-            fsm.Fsm.States = fsm.FsmStates.Append(state).ToArray();
+            fsm.Fsm.States = fsm.FsmStates.Append(stte).ToArray();
 
             return state;
         }
@@ -127,20 +127,20 @@ namespace Vasi
         public static void AddTransition(this FsmState state, FsmEvent @event, string toState)
         {
             state.Transitions = state.Transitions.Append
-                                     (
-                                         new FsmTransition
-                                         {
-                                             FsmEvent = @event,
-                                             ToFsmState = state.Fsm.GetState(toState)
-                                         }
-                                     )
-                                     .ToArray();
+            (
+                new FsmTransition
+                {
+                    FsmEvent = @event,
+                    ToFsmState = state.Fsm.GetState(toState)
+                }
+            )
+            .ToArray();
         }
 
         [PublicAPI]
         public static void AddTransition(this FsmState state, string eventName, string toState)
         {
-            state.AddTransition(FsmEvent.GetFsmEvent(eventName), toState);
+            state.AddTransition(FsmEvent.GetFsmEvent(eventName) ?? new FsmEvent(eventName), toState);
         }
 
         [PublicAPI]
