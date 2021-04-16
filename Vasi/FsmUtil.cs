@@ -12,7 +12,7 @@ namespace Vasi
     {
         public static void RemoveAction(this FsmState state, int index)
         {
-            state.Actions = state.Actions.Where((x, ind) => ind != index).ToArray();
+            state.Actions = state.Actions.Where((_, ind) => ind != index).ToArray();
         }
 
         public static void RemoveAction<T>(this FsmState state) where T : FsmStateAction
