@@ -29,7 +29,7 @@ namespace Vasi
         {
             var anim = fsm.GetAction<Tk2dPlayAnimationWithEvents>(stateName, index);
 
-            var @event = new FsmEvent(anim.animationCompleteEvent ?? anim.animationTriggerEvent);
+            var @event = FsmEvent.GetFsmEvent(anim.animationCompleteEvent ?? anim.animationTriggerEvent);
 
             FsmState state = fsm.GetState(stateName);
 
@@ -126,7 +126,7 @@ namespace Vasi
         [PublicAPI]
         public static void AddTransition(this FsmState state, string eventName, string toState)
         {
-            state.AddTransition(new FsmEvent(eventName), toState);
+            state.AddTransition(FsmEvent.GetFsmEvent(eventName), toState);
         }
 
         [PublicAPI]
