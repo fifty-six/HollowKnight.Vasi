@@ -14,7 +14,7 @@ namespace Vasi
         {
             state.Actions = state.Actions.Where((x, ind) => ind != index).ToArray();
         }
-        
+
         public static void RemoveAction<T>(this FsmState state) where T : FsmStateAction
         {
             state.Actions = state.Actions.RemoveFirst(x => x is T).ToArray();
@@ -49,21 +49,35 @@ namespace Vasi
 
         public static FsmState GetState(this PlayMakerFSM fsm, string stateName)
         {
-            return fsm.FsmStates.FirstOrDefault(t => t.Name == stateName);
+            return fsm.FsmStates.First(t => t.Name == stateName);
+        }
+
+        public static bool TryGetState(this PlayMakerFSM fsm, string stateName, out FsmState state)
+        {
+            state = fsm.FsmStates.FirstOrDefault(t => t.Name == stateName);
+
+            return state != null;
         }
 
         public static FsmState CopyState(this PlayMakerFSM fsm, string stateName, string newState)
         {
-            var state = new FsmState(fsm.GetState(stateName))
+            FsmState orig = fsm.GetState(stateName);
+
+            var state = new FsmState(orig)
             {
-                Name = newState
+                Name = newState,
+                Transitions = orig
+                              .Transitions
+                              .Select(x => new FsmTransition(x) { ToFsmState = x.ToFsmState })
+                              .ToArray(),
             };
+
 
             fsm.Fsm.States = fsm.FsmStates.Append(state).ToArray();
 
             return state;
         }
-        
+
         public static T GetAction<T>(this FsmState state, int index) where T : FsmStateAction
         {
             FsmStateAction act = state.Actions[index];
@@ -77,12 +91,12 @@ namespace Vasi
 
             return (T) act;
         }
-        
+
         public static T GetAction<T>(this FsmState state) where T : FsmStateAction
         {
-            return state.Actions.OfType<T>().FirstOrDefault();
+            return state.Actions.OfType<T>().First();
         }
-        
+
         public static T GetAction<T>(this PlayMakerFSM fsm, string stateName) where T : FsmStateAction
         {
             return fsm.GetState(stateName).GetAction<T>();
@@ -99,30 +113,30 @@ namespace Vasi
 
             action.Init(state);
         }
-        
+
         public static void ChangeTransition(this PlayMakerFSM self, string state, string eventName, string toState)
         {
             self.GetState(state).ChangeTransition(eventName, toState);
         }
-        
+
         public static void ChangeTransition(this FsmState state, string eventName, string toState)
         {
-            state.Transitions.First(tr => tr.EventName == eventName).ToFsmState = state.Fsm.GetState(toState);
+            state.Transitions.First(tr => tr.EventName == eventName).ToFsmState = state.Fsm.FsmComponent.GetState(toState);
         }
-        
+
         public static void AddTransition(this FsmState state, FsmEvent @event, string toState)
         {
             state.Transitions = state.Transitions.Append
-             (
-                 new FsmTransition
-                 {
-                     FsmEvent = @event,
-                     ToFsmState = state.Fsm.GetState(toState)
-                 }
-             )
-             .ToArray();
+                                     (
+                                         new FsmTransition
+                                         {
+                                             FsmEvent = @event,
+                                             ToFsmState = state.Fsm.GetState(toState)
+                                         }
+                                     )
+                                     .ToArray();
         }
-        
+
         [PublicAPI]
         public static void AddTransition(this FsmState state, string eventName, string toState)
         {
@@ -146,13 +160,13 @@ namespace Vasi
         {
             state.InsertMethod(state.Actions.Length, method);
         }
-        
+
         [PublicAPI]
         public static void InsertMethod(this FsmState state, int index, Action method)
         {
             state.InsertAction(index, new InvokeMethod(method));
         }
-        
+
         [PublicAPI]
         public static void InsertCoroutine(this FsmState state, int index, Func<IEnumerator> coro, bool wait = true)
         {
@@ -166,11 +180,11 @@ namespace Vasi
 
             if (prev != null)
                 return prev;
-            
+
             var @new = new FsmInt(intName);
 
             fsm.FsmVariables.IntVariables = fsm.FsmVariables.IntVariables.Append(@new).ToArray();
-            
+
             return @new;
         }
 
@@ -178,9 +192,9 @@ namespace Vasi
         public static FsmBool CreateBool(this PlayMakerFSM fsm, string boolName)
         {
             var @new = new FsmBool(boolName);
-            
+
             fsm.FsmVariables.BoolVariables = fsm.FsmVariables.BoolVariables.Append(@new).ToArray();
-            
+
             return @new;
         }
 
@@ -219,7 +233,7 @@ namespace Vasi
             {
                 Name = stateName
             };
-            
+
             fsm.Fsm.States = fsm.FsmStates.Append(state).ToArray();
 
             return state;
