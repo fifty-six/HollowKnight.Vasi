@@ -73,7 +73,7 @@ namespace Vasi
             };
 
 
-            fsm.Fsm.States = fsm.FsmStates.Append(stte).ToArray();
+            fsm.Fsm.States = fsm.FsmStates.Append(state).ToArray();
 
             return state;
         }
