@@ -36,8 +36,8 @@ namespace Vasi
             {
                 Fields[t] = typeFields = new Dictionary<string, FieldInfo>();
             }
-
-            if (typeFields.TryGetValue(field, out FieldInfo fi))
+            
+            if (typeFields.TryGetValue(field, out FieldInfo? fi))
             {
                 return fi;
             }

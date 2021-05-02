@@ -14,7 +14,7 @@ namespace Vasi
 
         public override void OnEnter()
         {
-            _action?.Invoke();
+            _action.Invoke();
             
             Finish();
         }

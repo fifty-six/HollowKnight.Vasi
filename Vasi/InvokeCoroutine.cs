@@ -17,13 +17,13 @@ namespace Vasi
 
         private IEnumerator Coroutine()
         {
-            yield return _coro?.Invoke();
+            yield return _coro.Invoke();
             Finish();
         }
 
         public override void OnEnter()
         {
-            Fsm.Owner.StartCoroutine(_wait ? Coroutine() : _coro?.Invoke());
+            Fsm.Owner.StartCoroutine(_wait ? Coroutine() : _coro.Invoke());
             
             if (!_wait) Finish();
         }

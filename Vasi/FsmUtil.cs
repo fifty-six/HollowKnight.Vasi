@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
@@ -52,7 +53,7 @@ namespace Vasi
             return fsm.FsmStates.First(t => t.Name == stateName);
         }
 
-        public static bool TryGetState(this PlayMakerFSM fsm, string stateName, out FsmState state)
+        public static bool TryGetState(this PlayMakerFSM fsm, string stateName, [MaybeNullWhen(false)] out FsmState state)
         {
             state = fsm.FsmStates.FirstOrDefault(t => t.Name == stateName);
 
@@ -176,7 +177,7 @@ namespace Vasi
         [PublicAPI]
         public static FsmInt GetOrCreateInt(this PlayMakerFSM fsm, string intName)
         {
-            FsmInt prev = fsm.FsmVariables.IntVariables.FirstOrDefault(x => x.Name == intName);
+            FsmInt? prev = fsm.FsmVariables.IntVariables.FirstOrDefault(x => x.Name == intName);
 
             if (prev != null)
                 return prev;
@@ -206,11 +207,11 @@ namespace Vasi
             float weight,
             int eventMaxAmount,
             int missedMaxAmount,
-            [CanBeNull] string eventName = null,
+            string? eventName = null,
             bool createInt = true
         )
         {
-            var fsm = sre.Fsm.Owner as PlayMakerFSM;
+            var fsm = (PlayMakerFSM) sre.Fsm.Owner;
 
             string state = sre.State.Name;
 
