@@ -13,7 +13,7 @@ namespace Vasi
             (
                 "__FieldAccess" + fi.DeclaringType?.Name + fi.Name,
                 typeof(TField),
-                new Type[0]
+                Type.EmptyTypes
             );
 
             ILGenerator gen = dm.GetILGenerator();
