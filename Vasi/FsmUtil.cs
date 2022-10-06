@@ -106,6 +106,8 @@ namespace Vasi
         public static void AddAction(this FsmState state, FsmStateAction action)
         {
             state.Actions = state.Actions.Append(action).ToArray();
+
+            action.Init(state);
         }
 
         public static void InsertAction(this FsmState state, int index, FsmStateAction action)
